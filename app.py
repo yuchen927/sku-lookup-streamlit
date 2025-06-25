@@ -77,23 +77,22 @@ new_sku = st.text_input("Enter new SKU (No)")
 new_category = st.text_input("Enter category (No_Category)")
 
 if st.button("Add SKU"):
+    st.write("Button clicked")  # Debug line
     if not new_sku.strip():
         st.warning("⚠️ SKU cannot be empty.")
     else:
-        # ✅ Always fetch fresh data from Google Sheets
         fresh_records = sheet.get_all_records()
-
-        # ✅ Defensive check to avoid crash when some rows are malformed
         existing_skus = [str(row["No"]).strip() for row in fresh_records if "No" in row]
+
+        st.write("Checking existing SKUs:", existing_skus)  # Debug
 
         if new_sku.strip() in existing_skus:
             st.warning("⚠️ This SKU already exists.")
         else:
-            # ✅ Append new SKU
+            st.write("Appending:", [new_sku.strip(), new_category.strip()])  # Debug
             sheet.append_row([new_sku.strip(), new_category.strip()])
             st.success(f"✅ Added SKU: {new_sku} with category: {new_category}")
-            st.rerun()  # Force refresh to prevent stale cache
-
+            st.rerun()
 
 # Delete existed SKU
 st.header("🗑️ Delete SKU From Database")
