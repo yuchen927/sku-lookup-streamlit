@@ -63,6 +63,8 @@ if sku_list:
     ))
 
     results = [fresh_sku_dict.get(sku, "SKU Not Found") for sku in sku_list]
+    result_df = pd.DataFrame({"SKU": sku_list, "Category": results})
+    st.dataframe(result_df, use_container_width=True)
 
     # CSV download
     csv_buffer = StringIO()
