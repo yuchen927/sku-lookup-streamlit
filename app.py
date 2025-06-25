@@ -101,8 +101,10 @@ if st.button("Delete SKU"):
 
         if rows_to_delete:
             for i in reversed(rows_to_delete):
-                sheet.delete_rows(i + 2)  # +2 for header
+                sheet.delete_rows(i + 2)  # +2 accounts for header row
             st.success(f"✅ Deleted {len(rows_to_delete)} row(s) with No = '{sku_to_delete}'")
-            st.rerun()
+            
+            # 👉 This is where you put it:
+            st.rerun()  # ✅ FORCE app to re-run from top
         else:
             st.error(f"❌ No match found for '{sku_to_delete}' in the 'No' column.")
