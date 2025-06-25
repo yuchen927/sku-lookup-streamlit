@@ -89,7 +89,7 @@ if st.button("Add to Google Sheet"):
 
 
 st.header("🗑️ Delete SKU From Database")
-
+# Delete existed SKU
 sku_to_delete = st.text_input("Enter the SKU (No) you want to delete:")
 
 if st.button("Delete SKU"):
@@ -101,10 +101,8 @@ if st.button("Delete SKU"):
 
         if rows_to_delete:
             for i in reversed(rows_to_delete):
-                sheet.delete_rows(i + 2)  # +2 to account for header row
+                sheet.delete_rows(i + 2)  # +2 for header
             st.success(f"✅ Deleted {len(rows_to_delete)} row(s) with No = '{sku_to_delete}'")
-            st.experimental_rerun()
+            st.rerun()
         else:
             st.error(f"❌ No match found for '{sku_to_delete}' in the 'No' column.")
-
-
