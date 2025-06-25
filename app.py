@@ -86,3 +86,27 @@ if st.button("Add to Google Sheet"):
             st.success(f"Added {new_sku} → {new_category}")
     else:
         st.error("Both fields are required.")
+
+
+st.header("🗑️ Delete SKU Entry")
+
+# Load all records from Google Sheet
+records = sheet.get_all_records()
+all_skus = sorted(set(row['SKU'] for row in records if row['SKU']))  # Unique SKUs only
+
+if all_skus:
+    sku_to_delete = st.selectbox("Select a SKU to delete", options=all_skus)
+
+    if st.button("Delete ALL Rows Matching This SKU"):
+        rows_to_delete = [i for i, row in enumerate(records) if str(row['SKU']).strip() == sku_to_delete.strip()]
+
+        if rows_to_delete:
+            # Delete from bottom to top to avoid row shifting
+            for i in reversed(rows_to_delete):
+                sheet.delete_rows(i + 2)  # +2 because row 1 is the header
+            st.success(f"✅ Deleted {len(rows_to_delete)} row(s) with SKU '{sku_to_delete}'")
+            st.experimental_rerun()
+        else:
+            st.error(f"❌ No matching rows found for SKU '{sku_to_delete}'")
+else:
+    st.info("No SKUs available to delete.")
