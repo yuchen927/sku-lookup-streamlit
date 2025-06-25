@@ -1,21 +1,23 @@
-# SKU Lookup Tool (Google Sheets Version)
+# SKU Lookup Tool (Google Sheets + Streamlit Secrets)
 
-This is a Streamlit web app that:
-- Loads SKU → Category mappings from a live Google Sheet
-- Allows users to search SKUs manually or by file upload
-- Adds new SKUs with categories (persistently)
-- Downloads results as CSV
+This version uses Streamlit Cloud **Secrets Management** for secure Google Sheets integration.
 
-## 🔧 Setup
+## ✅ Features
+- Read SKU → Category from live Google Sheet
+- Search by typing or uploading file
+- Add new SKUs with categories (saved to Google Sheets)
+- Download search results as CSV
 
-1. Create a Google Sheet with columns:
-   ```
-   No | No_Category
-   ```
+## 🔒 Setup
 
-2. Create a Service Account via Google Cloud Console.
-3. Download `credentials.json` and place it in this project directory.
-4. Share your Google Sheet with the service account email.
+1. On [Streamlit Cloud](https://streamlit.io/cloud), open your app and click **Edit Secrets**
+2. Paste your `credentials.json` content into secrets like this:
+
+```toml
+GOOGLE_SHEETS_CREDS = """<your full json>"""
+```
+
+3. Share your Google Sheet with your service account email.
 
 ## ▶️ Run Locally
 
@@ -23,7 +25,3 @@ This is a Streamlit web app that:
 pip install -r requirements.txt
 streamlit run app.py
 ```
-
-## 🔐 File Required
-
-Place your downloaded `credentials.json` in the root folder before running.
