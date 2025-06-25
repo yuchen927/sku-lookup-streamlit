@@ -11,14 +11,10 @@ scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/au
 credentials = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
 client = gspread.authorize(credentials)
 
-sheets = client.openall()
-st.write("✅ Sheets accessible by this bot:")
-for s in sheets:
-    st.write("-", s.title)
-
 # Open the Google Sheet
-SHEET_NAME = "sku_database"
-sheet = client.open(SHEET_NAME).sheet1
+SHEET_ID = "1EooOFIU6-rBHFPjabKrHB8kw7LyuhHXhsIUN138pLUE"
+sheet = client.open_by_key(SHEET_ID).sheet1
+
 
 # Load existing data
 data = sheet.get_all_records()
