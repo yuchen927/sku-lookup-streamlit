@@ -23,10 +23,18 @@ sku_dict = load_data()
 
 # UI
 st.title("🔍 SKU Lookup Tool")
-st.markdown("Enter a SKU to find its category (e.g., `10-271`).")
+st.markdown("Enter one or more SKUs (comma separated). Example: `10-271, 105-751`")
 
-sku_input = st.text_input("SKU", "")
+sku_input = st.text_input("SKU(s)", "")
 
 if sku_input:
-    result = sku_dict.get(sku_input.strip(), "SKU Not Found")
-    st.success(f"Category: **{result}**")
+    # Split by comma and strip whitespace
+    sku_list = [sku.strip() for sku in sku_input.split(",") if sku.strip()]
+    results = [sku_dict.get(sku, "SKU Not Found") for sku in sku_list]
+
+    result_df = pd.DataFrame({
+        "SKU": sku_list,
+        "Category": results
+    })
+
+    st.dataframe(result_df, use_container_width=True)
