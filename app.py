@@ -80,16 +80,19 @@ if st.button("Add SKU"):
     if not new_sku.strip():
         st.warning("⚠️ SKU cannot be empty.")
     else:
-        # 🧼 Always fetch fresh data before duplicate check
+        # ✅ Always fetch fresh data from Google Sheets
         fresh_records = sheet.get_all_records()
-        existing_skus = [row.get("No", "").strip() for row in fresh_records]
+
+        # ✅ Defensive check to avoid crash when some rows are malformed
+        existing_skus = [str(row["No"]).strip() for row in fresh_records if "No" in row]
 
         if new_sku.strip() in existing_skus:
             st.warning("⚠️ This SKU already exists.")
         else:
+            # ✅ Append new SKU
             sheet.append_row([new_sku.strip(), new_category.strip()])
             st.success(f"✅ Added SKU: {new_sku} with category: {new_category}")
-            st.rerun()
+            st.rerun()  # Force refresh to prevent stale cache
 
 
 # Delete existed SKU
