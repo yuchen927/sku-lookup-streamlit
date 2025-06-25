@@ -55,9 +55,14 @@ elif sku_input:
 
 # Search results
 if sku_list:
-    results = [sku_dict.get(sku, "SKU Not Found") for sku in sku_list]
-    result_df = pd.DataFrame({"SKU": sku_list, "Category": results})
-    st.dataframe(result_df, use_container_width=True)
+    # 🔁 Always fetch fresh data to reflect deletions
+    latest_records = sheet.get_all_records()
+    fresh_sku_dict = dict(zip(
+        pd.DataFrame(latest_records)["No"].astype(str),
+        pd.DataFrame(latest_records)["No_Category"]
+    ))
+
+    results = [fresh_sku_dict.get(sku, "SKU Not Found") for sku in sku_list]
 
     # CSV download
     csv_buffer = StringIO()
