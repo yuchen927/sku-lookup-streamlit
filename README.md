@@ -1,39 +1,29 @@
-# SKU Lookup Tool
+# SKU Lookup Tool (Google Sheets Version)
 
-This is a simple web app to look up SKU categories using Streamlit.
+This is a Streamlit web app that:
+- Loads SKU → Category mappings from a live Google Sheet
+- Allows users to search SKUs manually or by file upload
+- Adds new SKUs with categories (persistently)
+- Downloads results as CSV
 
-## 🔍 What It Does
-Enter an SKU like `10-271`, and the app will return its category (e.g., "Blanks") based on a preloaded CSV.
+## 🔧 Setup
 
-## 🚀 How to Run (Locally)
-1. Clone the repo:
-   ```bash
-   git clone https://github.com/yourusername/sku-lookup-streamlit.git
-   cd sku-lookup-streamlit
+1. Create a Google Sheet with columns:
+   ```
+   No | No_Category
    ```
 
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+2. Create a Service Account via Google Cloud Console.
+3. Download `credentials.json` and place it in this project directory.
+4. Share your Google Sheet with the service account email.
 
-3. Run the app:
-   ```bash
-   streamlit run app.py
-   ```
+## ▶️ Run Locally
 
-## 🌐 How to Deploy on Streamlit Cloud
-1. Go to [https://streamlit.io/cloud](https://streamlit.io/cloud)
-2. Log in with GitHub and click **New App**
-3. Choose this repo and set **Main file path** to:
-   ```
-   app.py
-   ```
-4. Click **Deploy**
+```bash
+pip install -r requirements.txt
+streamlit run app.py
+```
 
-## 📁 Files Included
-- `app.py`: Main Streamlit app
-- `no_category.csv`: Data file with SKU-to-category mapping
-- `requirements.txt`: Python packages
+## 🔐 File Required
 
-Enjoy your instant SKU search tool!
+Place your downloaded `credentials.json` in the root folder before running.
