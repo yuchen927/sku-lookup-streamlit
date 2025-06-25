@@ -87,28 +87,24 @@ if st.button("Add to Google Sheet"):
     else:
         st.error("Both fields are required.")
 
-st.header("🗑️ Delete SKU Entry")
 
-# Load all records from Google Sheet
-records = sheet.get_all_records()
+st.header("🗑️ Delete SKU From Database")
 
-# Extract SKUs safely: Only from rows that have a 'SKU' key and it's not empty
-all_skus = sorted(set(row.get('SKU', '').strip() for row in records if row.get('SKU', '').strip()))
+sku_to_delete = st.text_input("Enter the SKU (No) you want to delete:")
 
-if all_skus:
-    sku_to_delete = st.selectbox("Select a SKU to delete", options=all_skus)
-
-    if st.button("Delete ALL Rows Matching This SKU"):
-        rows_to_delete = [i for i, row in enumerate(records) if str(row.get('SKU', '')).strip() == sku_to_delete.strip()]
+if st.button("Delete SKU"):
+    if not sku_to_delete.strip():
+        st.warning("⚠️ Please enter a valid SKU.")
+    else:
+        records = sheet.get_all_records()
+        rows_to_delete = [i for i, row in enumerate(records) if str(row.get('No', '')).strip() == sku_to_delete.strip()]
 
         if rows_to_delete:
-            # Delete from bottom to top
             for i in reversed(rows_to_delete):
-                sheet.delete_rows(i + 2)  # +2 because row 1 is header
-            st.success(f"✅ Deleted {len(rows_to_delete)} row(s) with SKU '{sku_to_delete}'")
+                sheet.delete_rows(i + 2)  # +2 to account for header row
+            st.success(f"✅ Deleted {len(rows_to_delete)} row(s) with No = '{sku_to_delete}'")
             st.experimental_rerun()
         else:
-            st.error(f"❌ No matching rows found for SKU '{sku_to_delete}'")
-else:
-    st.info("No SKUs available to delete.")
+            st.error(f"❌ No match found for '{sku_to_delete}' in the 'No' column.")
+
 
