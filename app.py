@@ -71,25 +71,29 @@ if sku_list:
 
 # Add new SKU
 st.markdown("---")
-st.subheader("➕ Add a New SKU")
+st.header("➕ Add New SKU")
 
-new_sku = st.text_input("New SKU")
-new_category = st.text_input("Category for the new SKU")
-if st.button("Add to Google Sheet"):
-    if new_sku and new_category:
-        if new_sku in sku_dict:
-            st.warning("This SKU already exists.")
-        else:
-            sheet.append_row([new_sku, new_category])
-            new_row = pd.DataFrame([[new_sku, new_category]], columns=["No", "No_Category"])
-            st.session_state.sku_df = pd.concat([st.session_state.sku_df, new_row], ignore_index=True)
-            st.success(f"Added {new_sku} → {new_category}")
+new_sku = st.text_input("Enter new SKU (No)")
+new_category = st.text_input("Enter category (No_Category)")
+
+if st.button("Add SKU"):
+    if not new_sku.strip():
+        st.warning("⚠️ SKU cannot be empty.")
     else:
-        st.error("Both fields are required.")
+        # 🧼 Always fetch fresh data before duplicate check
+        fresh_records = sheet.get_all_records()
+        existing_skus = [row.get("No", "").strip() for row in fresh_records]
+
+        if new_sku.strip() in existing_skus:
+            st.warning("⚠️ This SKU already exists.")
+        else:
+            sheet.append_row([new_sku.strip(), new_category.strip()])
+            st.success(f"✅ Added SKU: {new_sku} with category: {new_category}")
+            st.rerun()
 
 
-st.header("🗑️ Delete SKU From Database")
 # Delete existed SKU
+st.header("🗑️ Delete SKU From Database")
 sku_to_delete = st.text_input("Enter the SKU (No) you want to delete:")
 
 if st.button("Delete SKU"):
