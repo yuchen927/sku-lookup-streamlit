@@ -3,10 +3,9 @@ import pandas as pd
 import os
 from io import StringIO
 
-# Set page title
 st.set_page_config(page_title="SKU Lookup Tool", layout="centered")
 
-# Load the CSV file
+# Load the CSV mapping
 file_path = "no_category.csv"
 
 @st.cache_data
@@ -24,22 +23,38 @@ sku_dict = load_data()
 
 # UI
 st.title("🔍 SKU Lookup Tool")
-st.markdown("Enter one or more SKUs (comma separated). Example: `10-271, 105-751`")
+st.markdown("Search by typing SKUs or uploading a file.")
 
-sku_input = st.text_input("SKU(s)", "")
+# Option 1: Manual input
+sku_input = st.text_input("Enter SKUs (comma separated):", "")
 
-if sku_input:
+# Option 2: File upload
+uploaded_file = st.file_uploader("OR Upload CSV/Excel with SKU column", type=["csv", "xlsx"])
+
+sku_list = []
+
+if uploaded_file:
+    try:
+        if uploaded_file.name.endswith(".csv"):
+            file_df = pd.read_csv(uploaded_file)
+        else:
+            file_df = pd.read_excel(uploaded_file)
+        if "SKU" not in file_df.columns:
+            st.error("File must contain a 'SKU' column.")
+        else:
+            sku_list = file_df["SKU"].astype(str).tolist()
+    except Exception as e:
+        st.error(f"Error reading file: {e}")
+elif sku_input:
     sku_list = [sku.strip() for sku in sku_input.split(",") if sku.strip()]
+
+# Lookup and show results
+if sku_list:
     results = [sku_dict.get(sku, "SKU Not Found") for sku in sku_list]
-
-    result_df = pd.DataFrame({
-        "SKU": sku_list,
-        "Category": results
-    })
-
+    result_df = pd.DataFrame({"SKU": sku_list, "Category": results})
     st.dataframe(result_df, use_container_width=True)
 
-    # Download CSV button
+    # Export results
     csv_buffer = StringIO()
     result_df.to_csv(csv_buffer, index=False)
     st.download_button(
